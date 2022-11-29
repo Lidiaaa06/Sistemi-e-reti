@@ -1,0 +1,143 @@
+;scelta del modello
+
+.model small 
+
+;scelta dello stack
+
+.stack 100h
+
+;segmento data
+
+.data 
+    
+    car1 db ?
+    car2 db ?
+    NMAI db 30h
+    NMIN db 30h
+    
+    testo1 db 'inserisci un carattere: ', '$'
+    testoMai db 'hai inserito caratteri maiuscoli: ', '$'
+    testoMin db 'hai inserito caratteri minuscoli: ', '$'
+    acapo db ,13,10,'$' 
+    
+
+;segmento code
+
+.code
+    .start up
+
+        mov ax,@data;sposto .data nel segmento dati
+        mov ds,ax  
+         
+        mov ah, 09h
+        mov dx, offset testo1
+        int 21h 
+        
+        mov ah, 01h
+        int 21h
+        mov car1, al
+        
+        mov ah,09h
+        mov dx, offset acapo
+        int 21h
+        
+        mov ah, 09h
+        mov dx, offset testo1
+        int 21h 
+        
+        mov ah, 01h
+        int 21h
+        mov car2, al
+        
+        mov ah,09h
+        mov dx, offset acapo
+        int 21h 
+         
+        mov al,car1
+        
+        cmp al,'A'
+        jge Vero
+        jmp fine
+        
+        Vero:
+            cmp al, 'Z'
+            jle Vero1
+            jmp Falso
+        
+        Vero1:
+            inc NMAI
+            jmp fine
+        
+        Falso:
+            cmp al, 'a'
+            jge Vero1A
+            jmp fine
+       
+        Vero1A: 
+            cmp al, 'z'
+            jle Vero1B
+            jmp fine
+        
+        Vero1B:
+            inc NMIN
+            jmp fine
+        
+        fine:
+            nop
+            
+        mov al, car2
+        
+        cmp al, 'A'
+        jge Vero2
+        jmp fine2
+        
+        Vero2:
+            cmp al, 'Z'
+            jle Vero2A
+            jmp Falso2
+        
+        Vero2A:
+            inc NMAI
+            jmp fine2
+        
+        Falso2:
+            cmp al, 'a'
+            jge Vero2B
+            jmp fine2
+       
+        Vero2B: 
+            cmp al, 'z'
+            jle Vero2C
+            jmp fine2
+        
+        Vero2C:
+            inc NMIN
+            jmp fine2
+        
+        fine2:
+            nop    
+        
+        mov ah, 09h
+        mov dx, offset testoMai
+        int 21h
+        
+        mov ah, 02h
+        mov dl, NMAI
+        int 21h
+        
+        mov ah, 09h
+        mov dx, offset acapo
+        int 21h
+        
+        mov ah, 09h
+        mov dx, offset testoMin
+        int 21h
+        
+        mov ah, 02h
+        mov dl, NMIN
+        int 21h
+            
+        mov ah,4ch;contrtollo sistema operativo
+        int 21h
+
+        end
